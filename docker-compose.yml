@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  web:
+    build:
+      context: app
+      dockerfile: Dockerfile
+    image: app
+    container_name: app
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+      - rabbitmq
+    volumes:
+      - .:/var/www/html
+  db:
+    image: mysql:5.7
+    container_name: my-mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: my_user
+      MYSQL_PASSWORD: my_password
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: my-rabbitmq
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+volumes:
+  db_data:
